@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useCallback } from "react";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -21,7 +21,7 @@ function reducer(state, action) {
         error: action.error,
       };
     default:
-      throw new Error(`Unhandled action type : ${action.type}`);
+      throw new Error(`Unhandled action type: ${action.type}`);
   }
 }
 
@@ -38,15 +38,14 @@ function useAsync(callback, deps = [], skip = false) {
       const data = await callback();
       dispatch({ type: "SUCCESS", data });
     } catch (e) {
-      dispatch({ tpye: "ERROR", e });
+      dispatch({ type: "ERROR", error: e });
     }
   };
 
   useEffect(() => {
     if (skip) return;
     fetchData();
-    // eslint-disabled-next-line
-  }, deps);
+  }, []);
 
   return [state, fetchData];
 }
