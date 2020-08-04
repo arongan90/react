@@ -6,6 +6,7 @@ const About = ({ location }) => {
     ignoreQueryPrefix: true,
   });
   const detail = query.detail === "true";
+  console.log(query);
 
   return (
     <div>

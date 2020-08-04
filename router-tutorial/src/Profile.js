@@ -1,4 +1,5 @@
 import React from "react";
+import WithRouter from "./WithRouter";
 
 const profileData = {
   donghan: {
@@ -24,6 +25,7 @@ const Profile = ({ match }) => {
         {nickname} ({profile.name})
       </h3>
       <p>{profile.description}</p>
+      <WithRouter />
     </div>
   );
 };
