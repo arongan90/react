@@ -15,7 +15,7 @@ const ADD_TO_LIST = "ADD_TO_LIST";
 
 // 액션 생성함수 정의(주로 camelCase로 작성)
 const increase = () => ({
-  type: INCREASE,
+  type: "INCREASE",
 });
 const decrease = () => ({
   type: DECREASE,
@@ -65,13 +65,17 @@ console.log(store.getState()); // 현재 store의 상태 조회
 const listener = () => {
   const state = store.getState();
   console.log(state);
+  console.log("구독");
 };
 
-// 구독을 해제할 때 호출하는 함수
-// const unsubcribe = store.subcribe(listener);
+const unsubcribe = store.subscribe(listener);
+// unsubscribe(); 구독 해제 할때 사용
 
 // 액션들을 디스패치
 store.dispatch(increase());
 store.dispatch(decrease());
 store.dispatch(changeText("안녕하세요"));
 store.dispatch(addToList({ id: 1, text: "와우" }));
+
+// window.store = store;
+// window.unsubcribe = unsubcribe;
