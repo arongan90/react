@@ -50,4 +50,4 @@ function Todos({ onToggle, todos, onCreate }) {
   );
 }
 
-export default Todos;
+export default React.memo(Todos);
