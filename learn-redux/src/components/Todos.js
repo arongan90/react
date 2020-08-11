@@ -5,7 +5,7 @@ const TodoItem = React.memo(function TodoIetm({ onToggle, todo }) {
   return (
     <li
       style={{
-        textDecoration: todo.done ? "linethrough" : "none",
+        textDecoration: todo.done ? "line-through" : "none",
       }}
       onClick={() => onToggle(todo.id)}
     >
