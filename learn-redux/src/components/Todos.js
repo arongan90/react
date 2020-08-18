@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 // 컴포넌트 최적화를 위하여 React.memo 사용
 const TodoItem = React.memo(function TodoIetm({ onToggle, todo }) {
   return (
     <li
       style={{
-        textDecoration: todo.done ? "line-through" : "none",
-        cursor: "pointer",
+        textDecoration: todo.done ? 'line-through' : 'none',
+        cursor: 'pointer',
       }}
       onClick={() => onToggle(todo.id)}
     >
@@ -33,7 +33,7 @@ function Todos({ onToggle, todos, onCreate }) {
   const onSubmit = (e) => {
     e.preventDefault(); // submit 이벤트 발생 시 새로고침 방지
     onCreate(text);
-    setText("");
+    setText('');
   };
 
   return (

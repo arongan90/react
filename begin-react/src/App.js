@@ -3,6 +3,9 @@ import Button from './components/Button';
 import './App.scss';
 
 function App() {
+  const arrowFunction = e => {
+    console.log(e);
+  };
   return (
     <div className="App">
       <div className="buttons">
