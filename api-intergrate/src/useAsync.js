@@ -1,20 +1,21 @@
-import { useReducer, useEffect, useCallback } from "react";
+import { useReducer, useEffect, useCallback } from 'react';
 
+// LOADING, SUCCESS, ERROR
 function reducer(state, action) {
   switch (action.type) {
-    case "LOADING":
+    case 'LOADING':
       return {
         loading: true,
         data: null,
         error: null,
       };
-    case "SUCCESS":
+    case 'SUCCESS':
       return {
         loading: false,
         data: action.data,
         error: null,
       };
-    case "ERROR":
+    case 'ERROR':
       return {
         loading: false,
         data: null,
@@ -32,20 +33,21 @@ function useAsync(callback, deps = [], skip = false) {
     error: null,
   });
 
-  const fetchData = async () => {
-    dispatch({ type: "LOADING" });
+  const fetchData = useCallback(async () => {
+    dispatch({ type: 'LOADING' });
     try {
       const data = await callback();
-      dispatch({ type: "SUCCESS", data });
+      dispatch({ type: 'SUCCESS', data });
     } catch (e) {
-      dispatch({ type: "ERROR", error: e });
+      dispatch({ type: 'ERROR', error: e });
     }
-  };
+  }, [callback]);
 
   useEffect(() => {
     if (skip) return;
     fetchData();
-  }, []);
+    // eslint-disable-next-line
+  }, deps);
 
   return [state, fetchData];
 }
