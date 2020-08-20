@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 function HistorySample({ history }) {
   const goBack = () => {
-    history.goBack();
+    history.goBack(); // 뒤로가기
   };
   const goHome = () => {
     history.push("/"); // push 특정경로로 이동
@@ -14,7 +14,7 @@ function HistorySample({ history }) {
   useEffect(() => {
     console.log(history);
     const unblock = history.block("정말 떠나실 건가요?");
-    console.log(typeof unblock);
+
     return () => {
       unblock();
     };

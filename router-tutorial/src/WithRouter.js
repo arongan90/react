@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 function WithRouter({ location, match, history }) {
+  // router를 사용하지 않는 곳에서 location, match, history를 사용 할 때
   return (
     <div>
       <h4>location</h4>
