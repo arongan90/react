@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from './components/Button';
 import './App.scss';
+import InputSample from './InputSample';
 
 function App() {
   const arrowFunction = e => {
@@ -52,6 +53,9 @@ function App() {
         <Button size="large" color="pink" fullWidth>
           BUTTON
         </Button>
+      </div>
+      <div className="input">
+        <InputSample />
       </div>
     </div>
   );
