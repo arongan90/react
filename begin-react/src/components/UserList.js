@@ -8,25 +8,7 @@ function User({ user }) {
   );
 }
 
-function UserList() {
-  const users = [
-    {
-      id: 1,
-      username: '박동한',
-      email: 'arongan90@gmail.com',
-    },
-    {
-      id: 2,
-      username: '신민주',
-      email: 'zoomandu@naver.com',
-    },
-    {
-      id: 3,
-      username: '테스트',
-      email: 'test@test.com',
-    },
-  ];
-
+function UserList({ users }) {
   return (
     <div>
       {users.map(user => (

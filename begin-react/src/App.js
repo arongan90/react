@@ -1,13 +1,55 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Button from './components/Button';
 import './App.scss';
 import InputSample from './InputSample';
 import UserList from './components/UserList';
+import CreateUser from './components/CreateUser';
 
 function App() {
-  const arrowFunction = e => {
-    console.log(e);
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: '',
+  });
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      username: '박동한',
+      email: 'arongan90@gmail.com',
+    },
+    {
+      id: 2,
+      username: '신민주',
+      email: 'zoomandu@naver.com',
+    },
+    {
+      id: 3,
+      username: '테스트',
+      email: 'test@test.com',
+    },
+  ]);
+  const { username, email } = inputs;
+  const nextId = useRef(4);
+  const onCreate = () => {
+    const user = {
+      id: nextId.current,
+      username,
+      email,
+    };
+    setUsers([...users, user]);
+    setInputs({
+      username: '',
+      email: '',
+    });
+    nextId.current += 1;
   };
+  const onChange = e => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value,
+    });
+  };
+
   return (
     <>
       <div className="App">
@@ -60,7 +102,15 @@ function App() {
           <InputSample />
         </div>
         <div className="userList">
-          <UserList />
+          <UserList users={users} />
+        </div>
+        <div className="createUser">
+          <CreateUser
+            username={username}
+            email={email}
+            onCreate={onCreate}
+            onChange={onChange}
+          />
         </div>
       </div>
     </>
