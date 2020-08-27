@@ -49,6 +49,9 @@ function App() {
       [name]: value,
     });
   };
+  const onRemove = id => {
+    setUsers(users.filter(user => user.id !== id));
+  };
 
   return (
     <>
@@ -102,7 +105,7 @@ function App() {
           <InputSample />
         </div>
         <div className="userList">
-          <UserList users={users} />
+          <UserList users={users} onRemove={onRemove} />
         </div>
         <div className="createUser">
           <CreateUser
