@@ -15,16 +15,19 @@ function App() {
       id: 1,
       username: '박동한',
       email: 'arongan90@gmail.com',
+      active: true,
     },
     {
       id: 2,
       username: '신민주',
       email: 'zoomandu@naver.com',
+      active: false,
     },
     {
       id: 3,
       username: '테스트',
       email: 'test@test.com',
+      active: false,
     },
   ]);
   const { username, email } = inputs;
@@ -51,6 +54,13 @@ function App() {
   };
   const onRemove = id => {
     setUsers(users.filter(user => user.id !== id));
+  };
+  const onToggle = id => {
+    setUsers(
+      users.map(user =>
+        user.id === id ? { ...user, active: !user.active } : user,
+      ),
+    );
   };
 
   return (
@@ -105,7 +115,7 @@ function App() {
           <InputSample />
         </div>
         <div className="userList">
-          <UserList users={users} onRemove={onRemove} />
+          <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
         </div>
         <div className="createUser">
           <CreateUser
