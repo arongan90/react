@@ -1,4 +1,5 @@
 import * as postAPI from '../api/posts';
+import { createPromiseThunk, reducerUtils } from './lib/asyncUtils';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -11,37 +12,12 @@ const GET_POST = 'GET_POST';
 const GET_POST_SUCCESS = 'GET_POST_SUCCESS';
 const GET_POST_ERROR = 'GET_POST_ERROR';
 
-export const getPosts = () => async dispatch => {
-  dispatch({ type: GET_POSTS });
-  try {
-    const posts = await postAPI.getPosts(); // API 호출
-    dispatch({ type: GET_POSTS_SUCCESS, posts }); // 성공
-  } catch (e) {
-    dispatch({ type: GET_POSTS_ERROR, error: e }); // 실패
-  }
-};
-
-export const getPost = () => async dispatch => {
-  dispatch({ type: GET_POST });
-  try {
-    const post = await postAPI.getPostById();
-    dispatch({ type: GET_POST_SUCCESS, post });
-  } catch (e) {
-    dispatch({ type: GET_POST_ERROR, error: e });
-  }
-};
+export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
+export const getPost = createPromiseThunk(GET_POST, postAPI.getPostById);
 
 const initialState = {
-  posts: {
-    loading: false,
-    data: null,
-    error: null,
-  },
-  post: {
-    loading: false,
-    data: null,
-    error: null,
-  },
+  posts: reducerUtils.initial(),
+  post: reducerUtils.initial(),
 };
 
 export default function posts(state = initialState) {
@@ -49,56 +25,32 @@ export default function posts(state = initialState) {
     case GET_POSTS:
       return {
         ...state,
-        posts: {
-          loading: true,
-          data: null,
-          error: null,
-        },
+        posts: reducerUtils.loading(),
       };
     case GET_POSTS_SUCCESS:
       return {
         ...state,
-        posts: {
-          loading: false,
-          data: action.posts,
-          error: null,
-        },
+        posts: reducerUtils.success(action.payload),
       };
     case GET_POSTS_ERROR:
       return {
         ...state,
-        post: {
-          loading: false,
-          data: null,
-          error: action.error,
-        },
+        post: reducerUtils.error(action.error),
       };
     case GET_POST:
       return {
         ...state,
-        post: {
-          loading: true,
-          data: null,
-          error: null,
-        },
+        post: reducerUtils.loading(),
       };
     case GET_POST_SUCCESS:
       return {
         ...state,
-        posts: {
-          loading: false,
-          data: action.post,
-          error: null,
-        },
+        posts: reducerUtils.success(action.payload),
       };
     case GET_POST_ERROR:
       return {
         ...state,
-        post: {
-          loading: false,
-          data: null,
-          error: action.error,
-        },
+        post: reducerUtils.error(action.error),
       };
     default:
       return state;
