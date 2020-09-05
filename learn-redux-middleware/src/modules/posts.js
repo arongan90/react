@@ -1,5 +1,9 @@
 import * as postAPI from '../api/posts';
-import { createPromiseThunk, reducerUtils } from './lib/asyncUtils';
+import {
+  createPromiseThunk,
+  reducerUtils,
+  handleAsnycActions,
+} from '../lib/asyncUtils';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -20,38 +24,16 @@ const initialState = {
   post: reducerUtils.initial(),
 };
 
-export default function posts(state = initialState) {
+export default function posts(state = initialState, action) {
   switch (action.type) {
     case GET_POSTS:
-      return {
-        ...state,
-        posts: reducerUtils.loading(),
-      };
     case GET_POSTS_SUCCESS:
-      return {
-        ...state,
-        posts: reducerUtils.success(action.payload),
-      };
     case GET_POSTS_ERROR:
-      return {
-        ...state,
-        post: reducerUtils.error(action.error),
-      };
+      return handleAsnycActions(GET_POSTS, 'posts')(state, action);
     case GET_POST:
-      return {
-        ...state,
-        post: reducerUtils.loading(),
-      };
     case GET_POST_SUCCESS:
-      return {
-        ...state,
-        posts: reducerUtils.success(action.payload),
-      };
     case GET_POST_ERROR:
-      return {
-        ...state,
-        post: reducerUtils.error(action.error),
-      };
+      return handleAsnycActions(GET_POST, 'post')(state, action);
     default:
       return state;
   }

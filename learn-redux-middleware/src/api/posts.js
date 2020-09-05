@@ -1,5 +1,5 @@
 // n 밀리세컨드 동안 기다리는 프로미스를 만들어주는 함수
-const sleep = new Promise(resolve => setTimeout(resolve, n));
+const sleep = n => new Promise(resolve => setTimeout(resolve, n));
 
 const posts = [
   {
@@ -27,7 +27,7 @@ export const getPosts = async () => {
 };
 
 // ID로 포스트를 조회하는 비동기 함수
-export const getPostById = async () => {
+export const getPostById = async id => {
   await sleep(500);
   return posts.find(post => post.id === id); // id로 찾아서 반환
 };
