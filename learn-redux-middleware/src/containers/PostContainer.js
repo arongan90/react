@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PostList from '../components/PostList';
-import { getPosts } from '../modules/posts';
+import Post from '../components/Post';
+import { getPost } from '../modules/posts';
 
-function PostListContainer({ postId }) {
-  const { data, loading, error } = useSelector(state => state.posts.posts);
+function PostContainer({ postId }) {
+  const { data, loading, error } = useSelector(state => state.posts.post);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getPosts(postId));
+    dispatch(getPost(postId));
   }, [dispatch]);
 
   if (loading) return <div>로딩중...</div>;
@@ -17,9 +17,9 @@ function PostListContainer({ postId }) {
 
   return (
     <div>
-      <PostList posts={data} />
+      <Post post={data} />
     </div>
   );
 }
 
-export default PostListContainer;
+export default PostContainer;
