@@ -42,7 +42,7 @@ export const reducerUtils = {
 
 // 비동기 관련 액션들을 처리하는 리듀서
 // type 은 액션의 타입, key 는 상태의 key(posts, post)
-export const handleAsnycActions = (type, key) => {
+export const handleAsnycActions = (type, key, keepData = false) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   return (state, action) => {
@@ -50,7 +50,7 @@ export const handleAsnycActions = (type, key) => {
       case type:
         return {
           ...state,
-          [key]: reducerUtils.loading(),
+          [key]: reducerUtils.loading(keepData ? state[key].data : null),
         };
       case SUCCESS:
         return {
