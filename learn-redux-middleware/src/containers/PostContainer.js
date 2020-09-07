@@ -8,6 +8,7 @@ function PostContainer({ postId }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (data) return; // 데이터가 있으면 재로딩 방지 코드(1)
     dispatch(getPost(postId));
   }, [dispatch]);
 
