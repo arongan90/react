@@ -13,6 +13,26 @@ export const createPromiseThunk = (type, promiseCreator) => {
   };
 };
 
+const defaultIdSelector = param => param;
+export const createPromiseThunkById = (
+  type,
+  promiseCreator,
+  idSelector = defaultIdSelector
+) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+
+  return param => async dispatch => {
+    const id = idSelector(param);
+    dispatch({ type, meta: id });
+    try {
+      const payload = await promiseCreator(param);
+      dispatch({ type: SUCCESS, payload, meta: id });
+    } catch (e) {
+      dispatch({ type: ERROR, payload: e, error: true, meta: id });
+    }
+  };
+};
+
 // 리듀서에서 사용 할 수 있는 여러 유틸 함수
 export const reducerUtils = {
   initial: (initialData = null) => ({
@@ -42,7 +62,7 @@ export const reducerUtils = {
 
 // 비동기 관련 액션들을 처리하는 리듀서
 // type 은 액션의 타입, key 는 상태의 key(posts, post)
-export const handleAsnycActions = (type, key, keepData = false) => {
+export const handleAsyncActions = (type, key, keepData = false) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   return (state, action) => {
@@ -61,6 +81,45 @@ export const handleAsnycActions = (type, key, keepData = false) => {
         return {
           ...state,
           [key]: reducerUtils.error(action.payload),
+        };
+      default:
+        return state;
+    }
+  };
+};
+
+export const handleAsyncActionsById = (type, key, keepData = false) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+
+  return (state, action) => {
+    const id = action.meta;
+    switch (action.type) {
+      case type:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.loading(
+              // state[key][id]가 만들어져있지 않을 수도 있으니까 유효성을 검사 후 data 조회
+              keepData ? state[key][id] && state[key][id].data : null
+            ),
+          },
+        };
+      case SUCCESS:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.success(action.payload),
+          },
+        };
+      case ERROR:
+        return {
+          ...state,
+          [key]: {
+            ...state[key],
+            [id]: reducerUtils.error(action.payload),
+          },
         };
       default:
         return state;
