@@ -1,3 +1,4 @@
+// API 요청하는 thunk 함수
 export const createPromiseThunk = (type, promiseCreator) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
