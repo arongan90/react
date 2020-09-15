@@ -7,6 +7,7 @@ import { Route } from 'react-router-dom';
 function App() {
   return (
     <div>
+      <CounterContainer />
       <Route path="/" component={PostListPage} exact />
       <Route path="/:id" component={PostPage} />
     </div>
