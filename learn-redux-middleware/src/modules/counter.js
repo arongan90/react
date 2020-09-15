@@ -10,6 +10,7 @@ export const decrease = () => ({ type: DECREASE });
 export const increaseAsync = () => ({ type: INCREASE_ASYNC });
 export const decreaseAsync = () => ({ type: DECREASE_ASYNC });
 
+// redux-saga 로 구현
 function* increaseSaga() {
   yield delay(1000); // 1초를 기다림
   yield put(increase()); // 액션을 디스패치

@@ -6,6 +6,7 @@ import {
   createPromiseThunkById,
   handleAsyncActionsById,
 } from '../lib/asyncUtils';
+import { call, put, takeEvery } from 'redux-saga/effects';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -20,12 +21,48 @@ const GET_POST_ERROR = 'GET_POST_ERROR';
 const CLEAR_POST = 'CLEAR_POST'; // 컴포넌트 언마운트 시 상태를 비우는 액션타입
 
 // api 를 요청 하는 thunk 함수
-export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
-export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
+// export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
+// export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
 export const clearPost = () => ({ type: CLEAR_POST });
 export const goToHome = () => (dispatch, getState, { history }) => {
   history.push('/');
 };
+
+// redux-saga 로 promise 다루기
+export const getPosts = () => ({ type: GET_POSTS });
+export const getPost = id => ({ type: GET_POST, payload: id, meta: id });
+
+function* getPostsSaga() {
+  try {
+    const posts = yield call(postAPI.getPosts);
+    yield put({ type: GET_POSTS_SUCCESS, payload: posts });
+  } catch (e) {
+    yield put({ type: GET_POSTS_ERROR, payload: e, error: true });
+  }
+}
+
+function* getPostSaga(action) {
+  const id = action.payload;
+  try {
+    const post = yield call(postAPI.getPostById, id);
+    yield put({
+      type: GET_POST_SUCCESS,
+      payload: post,
+      meta: id,
+    });
+  } catch (e) {
+    yield put({
+      type: GET_POST_ERROR,
+      payload: e,
+      error: true,
+    });
+  }
+}
+
+export function* postSaga() {
+  yield takeEvery(getPosts, getPostsSaga);
+  yield takeEvery(getPost, getPostSaga);
+}
 
 // 초기 상태
 const initialState = {
