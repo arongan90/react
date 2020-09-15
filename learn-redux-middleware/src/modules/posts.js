@@ -8,7 +8,7 @@ import {
   createPromiseSaga,
   createPromiseSagaById,
 } from '../lib/asyncUtils';
-import { takeEvery, getContext } from 'redux-saga/effects';
+import { takeEvery, getContext, select } from 'redux-saga/effects';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -20,8 +20,10 @@ const GET_POSTS_ERROR = 'GET_POSTS_ERROR';
 const GET_POST = 'GET_POST';
 const GET_POST_SUCCESS = 'GET_POST_SUCCESS';
 const GET_POST_ERROR = 'GET_POST_ERROR';
+
 const CLEAR_POST = 'CLEAR_POST'; // 컴포넌트 언마운트 시 상태를 비우는 액션타입
 const GO_TO_HOME = 'GO_TO_HOME';
+const PRINT_STATE = 'PRINT_STATE';
 
 // api 를 요청 하는 thunk 함수
 // export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
@@ -36,6 +38,7 @@ export const clearPost = () => ({ type: CLEAR_POST });
 export const getPosts = () => ({ type: GET_POSTS });
 export const getPost = id => ({ type: GET_POST, payload: id, meta: id }); // payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
 export const goToHome = () => ({ type: GO_TO_HOME });
+export const printState = () => ({ type: PRINT_STATE });
 
 const getPostsSaga = createPromiseSaga(GET_POSTS, postAPI.getPosts);
 const getPostSaga = createPromiseSagaById(GET_POST, postAPI.getPostById);
@@ -43,11 +46,16 @@ function* goToHomeSaga() {
   const history = yield getContext('history');
   history.push('/');
 }
+function* printStateSaga() {
+  const state = yield select(state => state.posts);
+  console.log(state);
+}
 // Saga 합치기
 export function* postsSaga() {
   yield takeEvery(GET_POSTS, getPostsSaga);
   yield takeEvery(GET_POST, getPostSaga);
   yield takeEvery(GO_TO_HOME, goToHomeSaga);
+  yield takeEvery(PRINT_STATE, printStateSaga);
 }
 // ------------------------------------------
 
