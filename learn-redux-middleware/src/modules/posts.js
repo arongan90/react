@@ -24,23 +24,34 @@ const CLEAR_POST = 'CLEAR_POST'; // 컴포넌트 언마운트 시 상태를 비�
 // export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
 // export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
 export const clearPost = () => ({ type: CLEAR_POST });
+// 3번째 인자를 사용하면 withExtraArgument 에서 너어준 값들을 사용 가능
 export const goToHome = () => (dispatch, getState, { history }) => {
   history.push('/');
 };
 
 // redux-saga 로 promise 다루기
 export const getPosts = () => ({ type: GET_POSTS });
+// payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
 export const getPost = id => ({ type: GET_POST, payload: id, meta: id });
 
 function* getPostsSaga() {
   try {
+    // call 을 사용하면 특정 함수를 호출하고, 결과물이 반환 될 때까지 기다려줄 수 있다
     const posts = yield call(postAPI.getPosts);
-    yield put({ type: GET_POSTS_SUCCESS, payload: posts });
+    yield put({
+      type: GET_POSTS_SUCCESS,
+      payload: posts,
+    }); // 성공 액션 디스패치
   } catch (e) {
-    yield put({ type: GET_POSTS_ERROR, payload: e, error: true });
+    yield put({
+      type: GET_POSTS_ERROR,
+      error: true,
+      payload: e,
+    }); // 실패 액션 디스패치
   }
 }
 
+// 액션이 지니고 있는 값을 조회하고 싶다면 action을 파라미터로 받아와서 사용
 function* getPostSaga(action) {
   const id = action.payload;
   try {
@@ -53,15 +64,17 @@ function* getPostSaga(action) {
   } catch (e) {
     yield put({
       type: GET_POST_ERROR,
-      payload: e,
       error: true,
+      payload: e,
+      meta: id,
     });
   }
 }
 
-export function* postSaga() {
-  yield takeEvery(getPosts, getPostsSaga);
-  yield takeEvery(getPost, getPostSaga);
+// Saga 합치기
+export function* postsSaga() {
+  yield takeEvery(GET_POSTS, getPostsSaga);
+  yield takeEvery(GET_POST, getPostSaga);
 }
 
 // 초기 상태
