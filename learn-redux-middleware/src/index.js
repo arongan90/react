@@ -14,8 +14,12 @@ import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import createSagaMiddleware from 'redux-saga';
 
-const sagaMiddleware = createSagaMiddleware();
-const customHistory = createBrowserHistory(); // 사가 미들웨어 만들기
+const customHistory = createBrowserHistory();
+const sagaMiddleware = createSagaMiddleware({
+  context: {
+    history: customHistory,
+  },
+}); // 사가 미들웨어 만들기
 
 const store = createStore(
   rootReducer,

@@ -8,7 +8,7 @@ import {
   createPromiseSaga,
   createPromiseSagaById,
 } from '../lib/asyncUtils';
-import { takeEvery } from 'redux-saga/effects';
+import { takeEvery, getContext } from 'redux-saga/effects';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -21,29 +21,35 @@ const GET_POST = 'GET_POST';
 const GET_POST_SUCCESS = 'GET_POST_SUCCESS';
 const GET_POST_ERROR = 'GET_POST_ERROR';
 const CLEAR_POST = 'CLEAR_POST'; // 컴포넌트 언마운트 시 상태를 비우는 액션타입
+const GO_TO_HOME = 'GO_TO_HOME';
 
 // api 를 요청 하는 thunk 함수
 // export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
 // export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
-export const clearPost = () => ({ type: CLEAR_POST });
 // 3번째 인자를 사용하면 withExtraArgument 에서 너어준 값들을 사용 가능
-export const goToHome = () => (dispatch, getState, { history }) => {
-  history.push('/');
-};
+// export const goToHome = () => (dispatch, getState, { history }) => {
+//   history.push('/');
+// };
+export const clearPost = () => ({ type: CLEAR_POST });
 
-// redux-saga 로 promise 다루기
+// ------ redux-saga 로 promise 다루기 ------
 export const getPosts = () => ({ type: GET_POSTS });
-// payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
-export const getPost = id => ({ type: GET_POST, payload: id, meta: id });
+export const getPost = id => ({ type: GET_POST, payload: id, meta: id }); // payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
+export const goToHome = () => ({ type: GO_TO_HOME });
 
 const getPostsSaga = createPromiseSaga(GET_POSTS, postAPI.getPosts);
 const getPostSaga = createPromiseSagaById(GET_POST, postAPI.getPostById);
-
+function* goToHomeSaga() {
+  const history = yield getContext('history');
+  history.push('/');
+}
 // Saga 합치기
 export function* postsSaga() {
   yield takeEvery(GET_POSTS, getPostsSaga);
   yield takeEvery(GET_POST, getPostSaga);
+  yield takeEvery(GO_TO_HOME, goToHomeSaga);
 }
+// ------------------------------------------
 
 // 초기 상태
 const initialState = {
