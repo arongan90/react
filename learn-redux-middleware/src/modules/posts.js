@@ -5,8 +5,10 @@ import {
   handleAsyncActions,
   createPromiseThunkById,
   handleAsyncActionsById,
+  createPromiseSaga,
+  createPromiseSagaById,
 } from '../lib/asyncUtils';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { takeEvery } from 'redux-saga/effects';
 
 // 액션타입
 // 포스트 여러개 조회
@@ -34,42 +36,8 @@ export const getPosts = () => ({ type: GET_POSTS });
 // payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
 export const getPost = id => ({ type: GET_POST, payload: id, meta: id });
 
-function* getPostsSaga() {
-  try {
-    // call 을 사용하면 특정 함수를 호출하고, 결과물이 반환 될 때까지 기다려줄 수 있다
-    const posts = yield call(postAPI.getPosts);
-    yield put({
-      type: GET_POSTS_SUCCESS,
-      payload: posts,
-    }); // 성공 액션 디스패치
-  } catch (e) {
-    yield put({
-      type: GET_POSTS_ERROR,
-      error: true,
-      payload: e,
-    }); // 실패 액션 디스패치
-  }
-}
-
-// 액션이 지니고 있는 값을 조회하고 싶다면 action을 파라미터로 받아와서 사용
-function* getPostSaga(action) {
-  const id = action.payload;
-  try {
-    const post = yield call(postAPI.getPostById, id);
-    yield put({
-      type: GET_POST_SUCCESS,
-      payload: post,
-      meta: id,
-    });
-  } catch (e) {
-    yield put({
-      type: GET_POST_ERROR,
-      error: true,
-      payload: e,
-      meta: id,
-    });
-  }
-}
+const getPostsSaga = createPromiseSaga(GET_POSTS, postAPI.getPosts);
+const getPostSaga = createPromiseSagaById(GET_POST, postAPI.getPostById);
 
 // Saga 합치기
 export function* postsSaga() {
@@ -103,3 +71,40 @@ export default function posts(state = initialState, action) {
       return state;
   }
 }
+
+// function* getPostsSaga() {
+//   try {
+//     // call 을 사용하면 특정 함수를 호출하고, 결과물이 반환 될 때까지 기다려줄 수 있다
+//     const posts = yield call(postAPI.getPosts);
+//     yield put({
+//       type: GET_POSTS_SUCCESS,
+//       payload: posts,
+//     }); // 성공 액션 디스패치
+//   } catch (e) {
+//     yield put({
+//       type: GET_POSTS_ERROR,
+//       error: true,
+//       payload: e,
+//     }); // 실패 액션 디스패치
+//   }
+// }
+
+// // 액션이 지니고 있는 값을 조회하고 싶다면 action을 파라미터로 받아와서 사용
+// function* getPostSaga(action) {
+//   const id = action.payload;
+//   try {
+//     const post = yield call(postAPI.getPostById, id);
+//     yield put({
+//       type: GET_POST_SUCCESS,
+//       payload: post,
+//       meta: id,
+//     });
+//   } catch (e) {
+//     yield put({
+//       type: GET_POST_ERROR,
+//       error: true,
+//       payload: e,
+//       meta: id,
+//     });
+//   }
+// }
