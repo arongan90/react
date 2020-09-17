@@ -15,23 +15,23 @@ import { createBrowserHistory } from 'history';
 import createSagaMiddleware from 'redux-saga';
 
 const customHistory = createBrowserHistory();
-const sagaMiddleware = createSagaMiddleware({
-  context: {
-    history: customHistory,
-  },
-}); // 사가 미들웨어 만들기
+// const sagaMiddleware = createSagaMiddleware({
+//   context: {
+//     history: customHistory,
+//   },
+// }); // 사가 미들웨어 만들기
 
 const store = createStore(
   rootReducer,
   composeWithDevTools(
     applyMiddleware(
-      sagaMiddleware, // 사가 미들웨어 적용
+      // sagaMiddleware, // 사가 미들웨어 적용
       reduxThunk.withExtraArgument({ history: customHistory }),
       logger
     )
   )
 );
-sagaMiddleware.run(rootSaga); // 루트 사가를 실행
+// sagaMiddleware.run(rootSaga); // 루트 사가를 실행
 // 주의: 스토어 생성이 된 다음에 위 코드를 실행해야 됨
 
 ReactDOM.render(

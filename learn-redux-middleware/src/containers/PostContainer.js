@@ -25,7 +25,7 @@ function PostContainer({ postId }) {
   return (
     <div>
       <button onClick={() => dispatch(goToHome())}>홈으로 이동</button>
-      <button onClick={() => dispatch(printState())}>상태 출력</button>
+      {/* <button onClick={() => dispatch(printState())}>상태 출력</button> */}
       <Post post={data} />
     </div>
   );

@@ -1,81 +1,82 @@
-import { put, call } from 'redux-saga/effects';
+// import { put, call } from 'redux-saga/effects';
 
-export const createPromiseSaga = (type, promiseCreator) => {
-  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
-  return function* saga(action) {
-    try {
-      const result = yield call(promiseCreator, action.payload);
-      yield put({
-        type: SUCCESS,
-        payload: result,
-      });
-    } catch (e) {
-      yield put({
-        type: ERROR,
-        error: true,
-        payload: e,
-      });
-    }
-  };
-};
+// redux-saga로 구현
+// export const createPromiseSaga = (type, promiseCreator) => {
+//   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+//   return function* saga(action) {
+//     try {
+//       const result = yield call(promiseCreator, action.payload);
+//       yield put({
+//         type: SUCCESS,
+//         payload: result,
+//       });
+//     } catch (e) {
+//       yield put({
+//         type: ERROR,
+//         error: true,
+//         payload: e,
+//       });
+//     }
+//   };
+// };
 
-export const createPromiseSagaById = (type, promiseCreator) => {
-  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
-  return function* saga(action) {
-    const id = action.meta;
-    try {
-      const result = yield call(promiseCreator, action.payload);
-      yield put({
-        type: SUCCESS,
-        payload: result,
-        meta: id,
-      });
-    } catch (e) {
-      yield put({
-        type: ERROR,
-        error: true,
-        payload: e,
-        meta: id,
-      });
-    }
-  };
-};
+// export const createPromiseSagaById = (type, promiseCreator) => {
+//   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+//   return function* saga(action) {
+//     const id = action.meta;
+//     try {
+//       const result = yield call(promiseCreator, action.payload);
+//       yield put({
+//         type: SUCCESS,
+//         payload: result,
+//         meta: id,
+//       });
+//     } catch (e) {
+//       yield put({
+//         type: ERROR,
+//         error: true,
+//         payload: e,
+//         meta: id,
+//       });
+//     }
+//   };
+// };
 
 // API 요청하는 thunk 함수
-// export const createPromiseThunk = (type, promiseCreator) => {
-//   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+export const createPromiseThunk = (type, promiseCreator) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
-//   return param => async dispatch => {
-//     dispatch({ type, param });
-//     try {
-//       // 결과물의 이름을 payload로 통일시켜서 반환
-//       const payload = await promiseCreator(param);
-//       dispatch({ type: SUCCESS, payload }); // 성공
-//     } catch (e) {
-//       dispatch({ type: ERROR, payload: e, error: true }); // 실패
-//     }
-//   };
-// };
+  return param => async dispatch => {
+    dispatch({ type, param });
+    try {
+      // 결과물의 이름을 payload로 통일시켜서 반환
+      const payload = await promiseCreator(param);
+      dispatch({ type: SUCCESS, payload }); // 성공
+    } catch (e) {
+      dispatch({ type: ERROR, payload: e, error: true }); // 실패
+    }
+  };
+};
 
-// const defaultIdSelector = param => param;
-// export const createPromiseThunkById = (
-//   type,
-//   promiseCreator,
-//   idSelector = defaultIdSelector
-// ) => {
-//   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
+const defaultIdSelector = param => param;
+export const createPromiseThunkById = (
+  type,
+  promiseCreator,
+  idSelector = defaultIdSelector
+) => {
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
-//   return param => async dispatch => {
-//     const id = idSelector(param);
-//     dispatch({ type, meta: id });
-//     try {
-//       const payload = await promiseCreator(param);
-//       dispatch({ type: SUCCESS, payload, meta: id });
-//     } catch (e) {
-//       dispatch({ type: ERROR, payload: e, error: true, meta: id });
-//     }
-//   };
-// };
+  return param => async dispatch => {
+    const id = idSelector(param);
+    dispatch({ type, meta: id });
+    try {
+      const payload = await promiseCreator(param);
+      dispatch({ type: SUCCESS, payload, meta: id });
+    } catch (e) {
+      dispatch({ type: ERROR, payload: e, error: true, meta: id });
+    }
+  };
+};
 
 // 리듀서에서 사용 할 수 있는 여러 유틸 함수
 export const reducerUtils = {

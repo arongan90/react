@@ -26,38 +26,13 @@ const GO_TO_HOME = 'GO_TO_HOME';
 const PRINT_STATE = 'PRINT_STATE';
 
 // api 를 요청 하는 thunk 함수
-// export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
-// export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
+export const getPosts = createPromiseThunk(GET_POSTS, postAPI.getPosts);
+export const getPost = createPromiseThunkById(GET_POST, postAPI.getPostById);
 // 3번째 인자를 사용하면 withExtraArgument 에서 너어준 값들을 사용 가능
-// export const goToHome = () => (dispatch, getState, { history }) => {
-//   history.push('/');
-// };
-export const clearPost = () => ({ type: CLEAR_POST });
-
-// ------ redux-saga 로 promise 다루기 ------
-export const getPosts = () => ({ type: GET_POSTS });
-export const getPost = id => ({ type: GET_POST, payload: id, meta: id }); // payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
-export const goToHome = () => ({ type: GO_TO_HOME });
-export const printState = () => ({ type: PRINT_STATE });
-
-const getPostsSaga = createPromiseSaga(GET_POSTS, postAPI.getPosts);
-const getPostSaga = createPromiseSagaById(GET_POST, postAPI.getPostById);
-function* goToHomeSaga() {
-  const history = yield getContext('history');
+export const goToHome = () => (dispatch, getState, { history }) => {
   history.push('/');
-}
-function* printStateSaga() {
-  const state = yield select(state => state.posts);
-  console.log(state);
-}
-// Saga 합치기
-export function* postsSaga() {
-  yield takeEvery(GET_POSTS, getPostsSaga);
-  yield takeEvery(GET_POST, getPostSaga);
-  yield takeEvery(GO_TO_HOME, goToHomeSaga);
-  yield takeEvery(PRINT_STATE, printStateSaga);
-}
-// ------------------------------------------
+};
+export const clearPost = () => ({ type: CLEAR_POST });
 
 // 초기 상태
 const initialState = {
@@ -85,6 +60,31 @@ export default function posts(state = initialState, action) {
       return state;
   }
 }
+
+// ------ redux-saga 로 promise 다루기 ------
+// export const getPosts = () => ({ type: GET_POSTS });
+// export const getPost = id => ({ type: GET_POST, payload: id, meta: id }); // payload는 파라미터 용도, meta는 리듀서에서 id를 알기위한 용도
+// export const goToHome = () => ({ type: GO_TO_HOME });
+// export const printState = () => ({ type: PRINT_STATE });
+
+// const getPostsSaga = createPromiseSaga(GET_POSTS, postAPI.getPosts);
+// const getPostSaga = createPromiseSagaById(GET_POST, postAPI.getPostById);
+// function* goToHomeSaga() {
+//   const history = yield getContext('history');
+//   history.push('/');
+// }
+// function* printStateSaga() {
+//   const state = yield select(state => state.posts);
+//   console.log(state);
+// }
+// // Saga 합치기
+// export function* postsSaga() {
+//   yield takeEvery(GET_POSTS, getPostsSaga);
+//   yield takeEvery(GET_POST, getPostSaga);
+//   yield takeEvery(GO_TO_HOME, goToHomeSaga);
+//   yield takeEvery(PRINT_STATE, printStateSaga);
+// }
+// ------------------------------------------
 
 // function* getPostsSaga() {
 //   try {
